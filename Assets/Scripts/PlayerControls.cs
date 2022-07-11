@@ -33,8 +33,7 @@ public class PlayerControls : MonoBehaviour
                     if (!GameManager.Instance.maze[currntPos.X, currntPos.Y + 1].is_wall)
                     {
                         MazeGeneratorCell nextStep = GameManager.Instance.maze[(int)Math.Round(transform.position.x), (int)Math.Round(transform.position.y) + 1];
-                        Debug.Log(nextStep.X + " - X");
-                        Debug.Log(nextStep.Y + " - Y");
+                        
                         _progress = 0f;
                         elapsedTime = 0;
                         _positionFrom = transform.position;
@@ -42,7 +41,7 @@ public class PlayerControls : MonoBehaviour
 
 
 
-                        Debug.Log("new goal " + _positionTo);
+                        
                     }
                 }
             }
@@ -58,8 +57,7 @@ public class PlayerControls : MonoBehaviour
                     if (!GameManager.Instance.maze[currntPos.X+1, currntPos.Y].is_wall)
                     {
                         MazeGeneratorCell nextStep = GameManager.Instance.maze[(int)Math.Round(transform.position.x+1), (int)Math.Round(transform.position.y)];
-                        Debug.Log(nextStep.X + " - X");
-                        Debug.Log(nextStep.Y + " - Y");
+                        
                         _progress = 0f;
                         elapsedTime = 0;
                         _positionFrom = transform.position;
@@ -67,7 +65,7 @@ public class PlayerControls : MonoBehaviour
 
 
 
-                        Debug.Log("new goal " + _positionTo);
+                       
                     }
                 }
             }
@@ -83,8 +81,7 @@ public class PlayerControls : MonoBehaviour
                     if (!GameManager.Instance.maze[currntPos.X, currntPos.Y-1].is_wall)
                     {
                         MazeGeneratorCell nextStep = GameManager.Instance.maze[(int)Math.Round(transform.position.x), (int)Math.Round(transform.position.y-1)];
-                        Debug.Log(nextStep.X + " - X");
-                        Debug.Log(nextStep.Y + " - Y");
+                       
                         _progress = 0f;
                         elapsedTime = 0;
                         _positionFrom = transform.position;
@@ -92,7 +89,7 @@ public class PlayerControls : MonoBehaviour
 
 
 
-                        Debug.Log("new goal " + _positionTo);
+                        
                     }
                 }
             }
@@ -108,8 +105,7 @@ public class PlayerControls : MonoBehaviour
                     if (!GameManager.Instance.maze[currntPos.X -1, currntPos.Y].is_wall)
                     {
                         MazeGeneratorCell nextStep = GameManager.Instance.maze[(int)Math.Round(transform.position.x-1), (int)Math.Round(transform.position.y)];
-                        Debug.Log(nextStep.X + " - X");
-                        Debug.Log(nextStep.Y + " - Y");
+                        
                         _progress = 0f;
                         elapsedTime = 0;
                         _positionFrom = transform.position;
@@ -117,7 +113,7 @@ public class PlayerControls : MonoBehaviour
 
 
 
-                        Debug.Log("new goal " + _positionTo);
+                       
                     }
                 }
             }

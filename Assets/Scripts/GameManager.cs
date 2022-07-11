@@ -11,14 +11,15 @@ public class GameManager : MonoBehaviour
     public GameObject PlayerPrefab;
     public GameObject EnemyPrefab;
     public MazeSpawner mazeSpawner;
-    private Vector2Int prevPlayerPos;
+    public Vector2Int prevPlayerPos;
+    public Vector2Int currentPlayerPos;
     public Text NoiseText;
     public MazeGeneratorCell[,] maze;
     private float noise = 0.0f;
     GameObject player;
     GameObject enemy1;
     GameObject enemy2;
-    private bool enemyStartedFollowing =false;
+    public bool enemyStartedFollowing =false;
     public  List<MazeGeneratorCell> availableCells;
 
 
@@ -67,7 +68,7 @@ public class GameManager : MonoBehaviour
         player = Instantiate(PlayerPrefab, Vector2.zero, Quaternion.identity);
         enemy1 = Instantiate(EnemyPrefab, enemyPos[0], Quaternion.identity);
        
-        enemy2 = Instantiate(EnemyPrefab, enemyPos[1], Quaternion.identity);
+        //enemy2 = Instantiate(EnemyPrefab, enemyPos[1], Quaternion.identity);
         
         prevPlayerPos = player.GetComponent<PlayerControls>().currentPosition;
 
@@ -75,14 +76,20 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 
-        if (prevPlayerPos != player.GetComponent<PlayerControls>().currentPosition && enemyStartedFollowing) 
+      /*  if (prevPlayerPos != player.GetComponent<PlayerControls>().currentPosition && enemyStartedFollowing) 
         {
 
             Vector2Int playerPos = player.GetComponent<PlayerControls>().currentPosition;
-            enemy1.GetComponent<EnemyBehaviour>().ChangeTarget(maze[playerPos.x, playerPos.y]);
-            enemy2.GetComponent<EnemyBehaviour>().ChangeTarget(maze[playerPos.x, playerPos.y]);
+            enemy1.GetComponent<EnemyBehaviour>().swithMod = true;
+            enemy1.GetComponent<EnemyBehaviour>().is_patrul = false;
+            enemy1.GetComponent<EnemyBehaviour>().is_following = true;
+            enemy2.GetComponent<EnemyBehaviour>().swithMod = true;
+            enemy2.GetComponent<EnemyBehaviour>().is_patrul = false;
+            enemy2.GetComponent<EnemyBehaviour>().is_following = true;
+            *//*  enemy1.GetComponent<EnemyBehaviour>().AddPath maze[prevPlayerPos.x, prevPlayerPos.y], maze[playerPos.x, playerPos.y]);
+              enemy2.GetComponent<EnemyBehaviour>().AddPath(maze[prevPlayerPos.x, prevPlayerPos.y], maze[playerPos.x, playerPos.y]);*//*
             // нужно добавялть только следующую клету
-        }
+        }*/
         
         prevPlayerPos = player.GetComponent<PlayerControls>().currentPosition;
 
@@ -93,10 +100,16 @@ public class GameManager : MonoBehaviour
         {
             enemyStartedFollowing = true;
             Vector2Int playerPos = player.GetComponent<PlayerControls>().currentPosition;
-            enemy1.GetComponent<EnemyBehaviour>().ChangeTarget(maze[playerPos.x,playerPos.y]);
-            enemy2.GetComponent<EnemyBehaviour>().ChangeTarget(maze[playerPos.x, playerPos.y]);
+            enemy1.GetComponent<EnemyBehaviour>().EnableFollowingMod();
+            //enemy2.GetComponent<EnemyBehaviour>().EnableFollowingMod();
+
+            /* enemy1.GetComponent<EnemyBehaviour>().ChangeTarget(maze[playerPos.x,playerPos.y]);
+             enemy2.GetComponent<EnemyBehaviour>().ChangeTarget(maze[playerPos.x, playerPos.y]);*/
         }
-        
+        /*if(noise<10)
+        {
+            enemyStartedFollowing= false;
+        }*/
 
     }
     Vector2 GetRandomPosForEnemy(MazeGeneratorCell[,] maze)

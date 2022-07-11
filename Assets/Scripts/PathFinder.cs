@@ -8,6 +8,7 @@ public class PathFinder
 {
     private const float PerpendicularDistance = 1f;
     private const float DiagonalDistance = 1.4f;
+    public float time;
     public static Cell SearchDirected(Cell entry, Cell target)
     {
         Dictionary<int, Cell> visited = new Dictionary<int, Cell>();

@@ -36,7 +36,7 @@ public class Cell
     public int Type()
     {
         MazeGeneratorCell[,] maze = GameManager.Instance.maze;
-        if (maze[Position.x,Position.y].is_void) 
+        if (!maze[Position.x,Position.y].is_wall) 
             return 0;
         else 
             return 1;
