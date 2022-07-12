@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+
 public class EnemyBehaviour : MonoBehaviour
 {
     private float _progress = -.1f;
@@ -9,7 +10,7 @@ public class EnemyBehaviour : MonoBehaviour
     private Vector2 _positionFrom;
     public float offset;
     private float desiredDuration = 1f;
-  
+    public Scene scene;
     private List<Cell> _wayList;
     private List<Cell> new_wayList;
     private float elapsedTime;
@@ -135,7 +136,8 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if(collision.CompareTag("Player"))
         {
-            Debug.Log("Game Over");
+
+            GameObject.Find("Main Camera").GetComponent<Scene>().LoadScene(2);
         }
     }
     private Quaternion GetRotateToTarget(Quaternion currentRotate, Vector2 direction)

@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
         }
         // Теперь нам нужно указать, чтобы объект не уничтожался
         // при переходе на другую сцену игры
-        DontDestroyOnLoad(gameObject);
+       
         availableCells = new List<MazeGeneratorCell>();
         maze = mazeSpawner.SpawnMaze();
 
@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour
         player = Instantiate(PlayerPrefab, Vector2.zero, Quaternion.identity);
         enemy1 = Instantiate(EnemyPrefab, enemyPos[0], Quaternion.identity);
        
-        //enemy2 = Instantiate(EnemyPrefab, enemyPos[1], Quaternion.identity);
+        enemy2 = Instantiate(EnemyPrefab, enemyPos[1], Quaternion.identity);
         
         prevPlayerPos = player.GetComponent<PlayerControls>().currentPosition;
 
@@ -101,7 +101,7 @@ public class GameManager : MonoBehaviour
             enemyStartedFollowing = true;
             Vector2Int playerPos = player.GetComponent<PlayerControls>().currentPosition;
             enemy1.GetComponent<EnemyBehaviour>().EnableFollowingMod();
-            //enemy2.GetComponent<EnemyBehaviour>().EnableFollowingMod();
+            enemy2.GetComponent<EnemyBehaviour>().EnableFollowingMod();
 
             /* enemy1.GetComponent<EnemyBehaviour>().ChangeTarget(maze[playerPos.x,playerPos.y]);
              enemy2.GetComponent<EnemyBehaviour>().ChangeTarget(maze[playerPos.x, playerPos.y]);*/

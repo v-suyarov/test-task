@@ -22,6 +22,10 @@ public class PlayerControls : MonoBehaviour
     private void Update()
     {
         currntPos = GameManager.Instance.maze[(int)Math.Round(transform.position.x), (int)Math.Round(transform.position.y)];
+        if (currntPos.is_end)
+        {
+            GameObject.Find("Main Camera").GetComponent<Scene>().LoadScene(2);
+        }
         if (Input.GetKey(KeyCode.W))
         {
 
