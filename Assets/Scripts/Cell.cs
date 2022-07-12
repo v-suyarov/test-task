@@ -35,7 +35,7 @@ public class Cell
     }
     public int Type()
     {
-        MazeGeneratorCell[,] maze = GameManager.Instance.maze;
+        MazeGeneratorCell[,] maze = GameManager.Instance.GetMap().GetMaze();
         if (!maze[Position.x,Position.y].is_wall) 
             return 0;
         else 
@@ -64,7 +64,7 @@ public class Cell
     }
     public bool IsFreeToMove()
     {
-        if (Position.x<0||Position.x>9||Position.y<0||Position.y>9/*Map.Exist(Position)*/) return false;
+        if (Position.x<0||Position.x>9||Position.y<0||Position.y>9) return false;
 
         if (Type()==0)
             return true;
@@ -92,9 +92,5 @@ public class Cell
     {
         return Position.x + " " + Position.y;
     }
-    private void OnMouseDown()
-    {
-        /*Debug.Log(423421);
-        GameManager.Instance.SetNewGoal();*/
-    }
+    
 }

@@ -7,104 +7,66 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+
+    public static GameManager Instance { get; private set; }
     
-    public GameObject PlayerPrefab;
-    public GameObject EnemyPrefab;
-    public MazeSpawner mazeSpawner;
-    public Vector2Int prevPlayerPos;
-    public Vector2Int currentPlayerPos;
-    public Text NoiseText;
-    public MazeGeneratorCell[,] maze;
-    private float noise = 0.0f;
-    GameObject player;
-    GameObject enemy1;
-    GameObject enemy2;
-    public bool enemyStartedFollowing =false;
-    public  List<MazeGeneratorCell> availableCells;
-
-
-
-    public static GameManager Instance = null; // Ёкземпл€р объекта
-
+    
+    private GameObject player;
+    private GameObject enemy1;
+    private GameObject enemy2;
+    private Map map;
+    private Scene scene;
+    private NoiseController noiseController;
+    private bool enemyStartedFollowing =false;
+        
+    [SerializeField] public GameObject PlayerPrefab;
+    [SerializeField] public GameObject EnemyPrefab;
+    [SerializeField] public GameObject cellPrefab;
+    [SerializeField] public Text NoiseText;
 
     void Start()
-    {
-
-       
+    {    
         if (Instance == null)
-        { // Ёкземпл€р менеджера был найден
-            Instance = this; // «адаем ссылку на экземпл€р объекта
+        { 
+            Instance = this; 
         }
         else if (Instance == this)
-        { // Ёкземпл€р объекта уже существует на сцене
-            Destroy(gameObject); // ”дал€ем объект
+        { 
+            Destroy(gameObject); 
         }
-        // “еперь нам нужно указать, чтобы объект не уничтожалс€
-        // при переходе на другую сцену игры
-       
-        availableCells = new List<MazeGeneratorCell>();
-        maze = mazeSpawner.SpawnMaze();
+        scene = new Scene();
+        noiseController = new NoiseController();
+        //создаем уровень       
+        MapGenerator mapGenerator = new MapGenerator(cellPrefab);
+        map = mapGenerator.GetMap();
+        //создаем игрока и врагов
+        List<Vector2Int> enemyPos = new List<Vector2Int>();
 
-        for (int x = 0; x < maze.GetLength(0); x++)
-        {
-            for (int y = 0; y < maze.GetLength(1); y++)
-            { 
-                if (maze[x, y].is_start || maze[x, y].is_end || maze[x, y].is_void)
-                {
-                    availableCells.Add(maze[x, y]);
-                }
-            }
-        }
-       
-
-        List<Vector2> enemyPos = new List<Vector2>();
-        enemyPos.Add(GetRandomPosForEnemy(maze));
-        enemyPos.Add(GetRandomPosForEnemy(maze));
+        enemyPos.Add(GetRandomPosForEnemy());
+        enemyPos.Add(GetRandomPosForEnemy());
         while(enemyPos[1]==enemyPos[0])
         {
-            enemyPos[1]=GetRandomPosForEnemy(maze);
+            enemyPos[1]=GetRandomPosForEnemy();
         }
 
         player = Instantiate(PlayerPrefab, Vector2.zero, Quaternion.identity);
-        enemy1 = Instantiate(EnemyPrefab, enemyPos[0], Quaternion.identity);
-       
-        enemy2 = Instantiate(EnemyPrefab, enemyPos[1], Quaternion.identity);
+        enemy1 = Instantiate(EnemyPrefab, new Vector3(enemyPos[0].x,enemyPos[0].y,0), Quaternion.identity);       
+        enemy2 = Instantiate(EnemyPrefab, new Vector3(enemyPos[1].x, enemyPos[1].y, 0), Quaternion.identity);       
         
-        prevPlayerPos = player.GetComponent<PlayerControls>().currentPosition;
 
     }
     void Update()
     {
+        //устанавливаем точность 
+        float _noise = (float)Math.Round((double)noiseController.GetNoise(), 1);
+        //выводим на экран текущий уровень шума
+        NoiseText.text = _noise.ToString();
 
-      /*  if (prevPlayerPos != player.GetComponent<PlayerControls>().currentPosition && enemyStartedFollowing) 
-        {
-
-            Vector2Int playerPos = player.GetComponent<PlayerControls>().currentPosition;
-            enemy1.GetComponent<EnemyBehaviour>().swithMod = true;
-            enemy1.GetComponent<EnemyBehaviour>().is_patrul = false;
-            enemy1.GetComponent<EnemyBehaviour>().is_following = true;
-            enemy2.GetComponent<EnemyBehaviour>().swithMod = true;
-            enemy2.GetComponent<EnemyBehaviour>().is_patrul = false;
-            enemy2.GetComponent<EnemyBehaviour>().is_following = true;
-            *//*  enemy1.GetComponent<EnemyBehaviour>().AddPath maze[prevPlayerPos.x, prevPlayerPos.y], maze[playerPos.x, playerPos.y]);
-              enemy2.GetComponent<EnemyBehaviour>().AddPath(maze[prevPlayerPos.x, prevPlayerPos.y], maze[playerPos.x, playerPos.y]);*//*
-            // нужно добав€лть только следующую клету
-        }*/
-        
-        prevPlayerPos = player.GetComponent<PlayerControls>().currentPosition;
-
-        float s = (float)Math.Round((double)noise, 1);
-        NoiseText.text = s.ToString();
-
-        if (noise >= 10&&!enemyStartedFollowing)
+        if (noiseController.GetNoise() >= 10&&!enemyStartedFollowing)
         {
             enemyStartedFollowing = true;
-            Vector2Int playerPos = player.GetComponent<PlayerControls>().currentPosition;
             enemy1.GetComponent<EnemyBehaviour>().EnableFollowingMod();
-            enemy2.GetComponent<EnemyBehaviour>().EnableFollowingMod();
-
-            /* enemy1.GetComponent<EnemyBehaviour>().ChangeTarget(maze[playerPos.x,playerPos.y]);
-             enemy2.GetComponent<EnemyBehaviour>().ChangeTarget(maze[playerPos.x, playerPos.y]);*/
+            enemy2.GetComponent<EnemyBehaviour>().EnableFollowingMod();          
         }
         /*if(noise<10)
         {
@@ -112,48 +74,56 @@ public class GameManager : MonoBehaviour
         }*/
 
     }
-    Vector2 GetRandomPosForEnemy(MazeGeneratorCell[,] maze)
+    Vector2Int GetRandomPosForEnemy()
     {
-        Vector2 posEnemy = Vector2.zero;
-        if(UnityEngine.Random.Range(0, 2) == 0)
+        int random = UnityEngine.Random.Range(0, map.GetAvailableCells().Count);
+        int randomX = (int)Math.Round((float)map.GetAvailableCells()[random].X);
+        int randomY = (int)Math.Round((float)map.GetAvailableCells()[random].Y);
+        //не допускаем спавн врагов слишком близко к персонажу
+        while (randomX <= 3 && randomY <= 3)
         {
-            for (int x = maze.GetLength(0) - 1; x >= 0; x--)
-            {
-                for (int y = maze.GetLength(1) - 1; y >= maze.GetLength(1) / 2; y--)
-                {
-                    if (maze[x, y].is_void && UnityEngine.Random.Range(0, 10) ==0)
-                    {
-                        return new Vector2(x, y);
+            random = UnityEngine.Random.Range(0, map.GetAvailableCells().Count);
+            randomX = (int)Math.Round((float)map.GetAvailableCells()[random].X);
+            randomY = (int)Math.Round((float)map.GetAvailableCells()[random].Y);
+        }    
+        
 
-                    }
-                }
-            }
+        return new Vector2Int(randomX,randomY); 
+    }
+   
+    public Map GetMap()
+    {
+        return map; 
+    }
+    public GameObject GetPlayer()
+    {
+        return player;
+    }
+    public GameObject GetEnemy(int enemyID)
+    {
+        if (enemyID == 0)
+            return enemy1;
+        else
+            return enemy2;
+    }
+    public NoiseController GetNoiseController()
+    {
+        return noiseController;
+    }
+    public void GameOver(bool is_win)
+    {
+        //если игрок победил
+        if(is_win)
+        {
+            //...
+            scene.LoadScene(2);
         }
+        //если игрок проиграл
         else
         {
-            for (int x = maze.GetLength(0) - 1; x >= maze.GetLength(0)/2; x--)
-            {
-                for (int y = maze.GetLength(1) - 1; y >= 0; y--)
-                {
-                    if (maze[x, y].is_void && UnityEngine.Random.Range(0, 10)==0 )
-                    {
-                        return new Vector2(x, y);
-
-                    }
-                }
-            }
+            //...
+            scene.LoadScene(2);
         }
-
-
-        return GetRandomPosForEnemy(maze);
+        
     }
-    public void AddNoise(float addNoise)
-    {
-        if (noise + addNoise>=0)
-            noise += addNoise;
-
-
-    }
-
-
 }

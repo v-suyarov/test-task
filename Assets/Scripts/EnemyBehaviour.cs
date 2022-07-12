@@ -5,82 +5,72 @@ using System;
 
 public class EnemyBehaviour : MonoBehaviour
 {
+
+   
+    //прогресс перемещения к следующей ячейке, если <0 - готов к новому перемещению, если >= 0 - происходит перемещение, при >= 1 произойдет сброс до < 0 (т.к. перемещение будет заверщено)
     private float _progress = -.1f;
     private Vector2 _positionTo;
     private Vector2 _positionFrom;
-    public float offset;
+    //время, за которое произойдет полное перемещение на 1 клетку
     private float desiredDuration = 1f;
-    public Scene scene;
     private List<Cell> _wayList;
-    private List<Cell> new_wayList;
     private float elapsedTime;
-    public Vector2Int currentPos;
+    private Vector2Int currentPos;
     private Quaternion _prevRotate;
     private Quaternion _newRotate;
-    private bool is_endMoving = true;
-    public bool is_following= false;
-    public bool is_patrul = true;
-    public bool swithMod = false;
-    public SpriteRenderer spriteRenderer;
+    private bool is_following= false;
+    private bool is_patrul = true;
     
+    [SerializeField] public SpriteRenderer spriteRenderer;
+    [SerializeField] public float speedRotate = 2f;
 
     void Start()
-    {
-        new_wayList = new List<Cell>();
+    {       
         _wayList = new List<Cell>();
     }
-        private void Update()
+    private void Update()
     {
-        //режим патрулирования
-        if ((_wayList.Count <= 0 && _progress < 0f) || (swithMod && _progress<0f) ) 
+        //режим передвижения (при is_following = true происходит перерасчет пути каждый раз, когда progress<0, т.е. переход на клетку был закончен)
+        if ((_wayList.Count <= 0 && _progress < 0f) || (is_following && _progress<0f) ) 
         {
-           if(is_patrul&&!is_following)
+           //если включен режим приследования
+            if (is_following)
             {
-                int randomPos = UnityEngine.Random.Range(0, GameManager.Instance.availableCells.Count);
-                MazeGeneratorCell randomCell = GameManager.Instance.availableCells[randomPos];
-                SetNewGoal(randomCell);
+                Vector2Int playerPos = GameManager.Instance.GetPlayer().GetComponent<PlayerControls>().GetCurrentPosition();              
+                SetNewGoal(playerPos);
             }
-           else if (is_following && !is_patrul)
+            //иначе переходим в режим патрулирования
+            else 
             {
-                Vector2Int playerPos = GameManager.Instance.prevPlayerPos;
-                MazeGeneratorCell nextCell = new MazeGeneratorCell();
-                nextCell.X = playerPos.x;
-                nextCell.Y = playerPos.y;
-                SetNewGoal(nextCell);
+                int randomPos = UnityEngine.Random.Range(0, GameManager.Instance.GetMap().GetAvailableCells().Count);
+                MazeGeneratorCell randomCell = GameManager.Instance.GetMap().GetAvailableCells()[randomPos];
+                Vector2Int posRandomCell = new Vector2Int(randomCell.X, randomCell.Y);
+                SetNewGoal(posRandomCell);
             }
-           //swithMod = false;
-           
+
         }
         //переключение движения к следующей точке, пока они есть
         if (_wayList.Count > 0 && (_progress >= 1f || _progress < 0f))
-        {
-            
+        {           
+            //сброс и получение данных перед передвижением к следующей клетке   
             Cell nextStep = _wayList[_wayList.Count-1];
             _wayList.RemoveAt(_wayList.Count - 1);
-            
             _prevRotate = transform.rotation;
             _progress = 0f;
             elapsedTime = 0;
             _positionFrom = transform.position;
             _positionTo = new Vector2(nextStep.Position.x, nextStep.Position.y);
-
             Vector2 directionRotate = _positionTo - _positionFrom;
-            _newRotate = GetRotateToTarget(transform.rotation,directionRotate);//Quaternion.FromToRotation(Vector3.up, direction).ToEuler();
-            
-           
-
-            
+            _newRotate = GetRotateToTarget(transform.rotation,directionRotate);
+              
         }
-        //движение и поворот к заданной позиции
+        //движение и поворот к заданной клетке
         if (_progress >= 0&& _progress < 1)
         {
             elapsedTime += Time.deltaTime;
             _progress = elapsedTime / desiredDuration;
             transform.position = Vector2.Lerp(_positionFrom, _positionTo, _progress);
-            Quaternion tempRotate = Quaternion.Euler(_newRotate.x,_newRotate.y,_newRotate.z);
-        
-         
-            transform.rotation = Quaternion.Lerp(_prevRotate, _newRotate, _progress*2);
+            transform.rotation = Quaternion.Lerp(_prevRotate, _newRotate, _progress*speedRotate);
 
             if (_progress >= 1)
             {
@@ -88,58 +78,50 @@ public class EnemyBehaviour : MonoBehaviour
             }
             
         }
-        //если точки закончились и мы дошли до этой точки 
+        //если дошли до точки 
         if (_progress >= 1)
         {
-
             _progress = -.1f;
         }
     }
 
-    public void SetNewGoal(MazeGeneratorCell newGoal)
+    //получаем путь и сохраняем его в _wayList
+    public void SetNewGoal(Vector2Int newGoal)
     {
         Cell target = PathFinder.SearchDirected(
             new Cell(new Vector2Int(
                 (int)Math.Round(transform.position.x),
                 (int)Math.Round(transform.position.y)
             ))
-            , new Cell(new Vector2Int(
-                (int)Math.Round((float)newGoal.X),
-                (int)Math.Round((float)newGoal.Y)
-            )));
-
-
-
+            , new Cell(newGoal)
+            );
 
         if (target != null)
-        {
-           
+        {          
             _wayList.Clear();
             while (target.Parent != null)
-            {
-                
-                _wayList.Add(target);
-                
+            {               
+                _wayList.Add(target);               
                 target = target.Parent;
             }
         }
     }
     public void EnableFollowingMod()
     {
-        spriteRenderer.color = new Color(1, 1, 0, 0.8f);
-      swithMod = true;
+      spriteRenderer.color = new Color(1, 1, 0, 0.8f);     
       is_patrul = false;
       is_following = true;
     }
 
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Player"))
-        {
-
-            GameObject.Find("Main Camera").GetComponent<Scene>().LoadScene(2);
+        { 
+            GameManager.Instance.GameOver(false);
         }
     }
+    //определяет на сколько повернуть объект в Quaternion при повороть вправо, вслево, вверх, вниз, сейчас настроена на случай, когда объект изначально смотрит вниз
     private Quaternion GetRotateToTarget(Quaternion currentRotate, Vector2 direction)
     {
         Vector3 rotate = currentRotate.ToEuler();
@@ -164,4 +146,6 @@ public class EnemyBehaviour : MonoBehaviour
             return currentRotate;
 
     }
+    
+    
 }

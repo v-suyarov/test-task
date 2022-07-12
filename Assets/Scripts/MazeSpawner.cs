@@ -4,13 +4,20 @@ using UnityEngine;
 
 public class MazeSpawner : MonoBehaviour
 {
-    public GameObject CellPrefab;
-    public int Width = 10;
-    public int Height = 7;
+    public MazeSpawner(GameObject cellPrefab,int width, int height)
+    {
+        m_cellPrefab = cellPrefab;
+        m_width = width;
+        m_height = height;
+    }
+    
+    private GameObject m_cellPrefab;
+    private int m_width = 10;
+    private int m_height = 10;
     // Start is called before the first frame update
     public MazeGeneratorCell[,] SpawnMaze()
     { 
-        MazeGenerator generator = new MazeGenerator(Width,Height);
+        MazeGenerator generator = new MazeGenerator(m_width,m_height);
         MazeGeneratorCell[,] maze = generator.GenerateMaze();
         
 
@@ -18,7 +25,7 @@ public class MazeSpawner : MonoBehaviour
         {
             for (int y = 0; y < maze.GetLength(1); y++)
             {
-              VievCell cell= Instantiate(CellPrefab, new Vector2(x, y), Quaternion.identity).GetComponent<VievCell>();
+              VievCell cell= Instantiate(m_cellPrefab, new Vector2(x, y), Quaternion.identity).GetComponent<VievCell>();
               
                 cell._void.SetActive(maze[x, y].is_void);
                 cell._wall.SetActive(maze[x, y].is_wall);
@@ -33,7 +40,7 @@ public class MazeSpawner : MonoBehaviour
             {
                 if (  (x < 0 || x > 9) || (y < 0 || y > 9))
                 {
-                    VievCell cell = Instantiate(CellPrefab, new Vector2(x, y), Quaternion.identity).GetComponent<VievCell>();
+                    VievCell cell = Instantiate(m_cellPrefab, new Vector2(x, y), Quaternion.identity).GetComponent<VievCell>();
 
                     cell._void.SetActive(false);
                     cell._wall.SetActive(true);

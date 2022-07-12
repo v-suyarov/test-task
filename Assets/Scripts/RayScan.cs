@@ -4,28 +4,18 @@ using UnityEngine;
 
 public class RayScan : MonoBehaviour
 {
-	public string targetTag = "Player";
-	public int rays = 6;
-	public float distance = 2.15f;
-	public float angle = 20;
-	public float width = 0.8f;
-	public float offsetY;
-	public Transform startRay;
+	[SerializeField] private string targetTag = "Player";
+	
+	[SerializeField] private float distance = 2.15f;
+	//ширина триггерной зоны в радианах*2
+	[SerializeField] public float width = 0.8f;
 	public LayerMask LayerMask;
 	
 	
-
-	void Start()
-	{
-		
-	}
-
-	// Update is called once per frame
 	void Update()
     {
 		
-
-		//Debug.DrawRay(transform.position, transform.TransformDirection(Vector2.down) * distance, Color.yellow);
+		//испускает лучи в посиках игрока
 		float nexRotate = -width;
 		while(nexRotate<=width)
         {
@@ -39,21 +29,15 @@ public class RayScan : MonoBehaviour
 			Debug.DrawRay(transform.position, transform.TransformDirection(nextRay) * distance, Color.black);
 			if (hit.collider != null)
 			{
+				//если луч попадет в игрока, то включаем режим преследования
 				if (hit.collider.CompareTag("Player"))
-					transform.GetComponent<EnemyBehaviour>().EnableFollowingMod();
+				{
+					GameManager.Instance.GetEnemy(0).GetComponent<EnemyBehaviour>().EnableFollowingMod();
+					GameManager.Instance.GetEnemy(1).GetComponent<EnemyBehaviour>().EnableFollowingMod();
+				}
 			}
 			nexRotate += 0.1f;
-		}
-		
-		
-		/*if (hit.collider != null)
-		{
-			Debug.DrawLine(transform.position, hit.collider.transform.position,Color.yellow);
-            if (hit.collider.CompareTag("Player"))
-                Debug.Log("hit");
-        }*/
-
-		
+		}	
 		
     }
 }

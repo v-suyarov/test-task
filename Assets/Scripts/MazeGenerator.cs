@@ -7,16 +7,16 @@ public class MazeGeneratorCell
     public int X;
     public int Y;
 
-    public bool is_void=true;
+    public bool is_void = true;
     public bool is_wall=false;
-
     public bool is_visited = false;
-
     public bool is_start =false;
     public bool is_end =false;
 
     
 }
+//при генерации уровня сначала генерируется лабиринт, затем сносятся случайные стены, затем от выхода удаляются случайные стены, до момента пока выход не будет заблокирован стенами
+//такая генерация гарантирует, что будет как минимум один путь до выхода 
 public class MazeGenerator
 {
     public int Width=10;
@@ -93,24 +93,25 @@ public class MazeGenerator
         RemoveRandomWalls(maze);
 
         
-
+        //установка старта
         maze[0, 0].is_wall = false;
         maze[0, 0].is_void = false;
         maze[0, 0].is_start = true;
         maze[0,0].is_visited = true;
-
+        //установка выхода
         maze[maze.GetLength(0)-1, maze.GetLength(1)-1].is_wall = false;
         maze[maze.GetLength(0) -1, maze.GetLength(1) - 1].is_void = false;
         maze[maze.GetLength(0) -1, maze.GetLength(1) - 1].is_end = true;
         maze[maze.GetLength(0) - 1, maze.GetLength(1) - 1].is_visited = true;
     }
 
-    private void RemoveWall(MazeGeneratorCell a, MazeGeneratorCell b)
+    /*private void RemoveWall(MazeGeneratorCell a, MazeGeneratorCell b)
     {
         b.is_void = true;
         b.is_wall = false;
-    }
+    }*/
 
+    //функция проверяет является ли клетка стеной, которую нельзя снести
     private bool IsWall(MazeGeneratorCell[,] maze,int cell_x,int cell_y)
     {
         
@@ -158,30 +159,9 @@ public class MazeGenerator
             return false;
 
     }
-    private void RemoveBounds(MazeGeneratorCell[,] maze)
-    {
-        for (int x = 0; x < maze.GetLength(0); x++)
-        {
-            if (UnityEngine.Random.Range(0, 10) > 5)
-            { 
-            maze[x, 0].is_void = true;
-            maze[x, 0].is_wall = false;
-            maze[x, maze.GetLength(1) - 1].is_void = true;
-            maze[x, maze.GetLength(1) - 1].is_wall = false;
-            }
-        }
-        for (int y = 0; y < maze.GetLength(1); y++)
-        {
-            if (UnityEngine.Random.Range(0, 10) > 5)
-            {
-                maze[0, y].is_void = true;
-                maze[0, y].is_wall = false;
-                maze[maze.GetLength(0) - 1, y].is_void = true;
-                maze[maze.GetLength(0) - 1, y].is_wall = false;
-            }
-        }
-    }
+    
 
+    //удаляет случайные стены
     private void RemoveRandomWalls(MazeGeneratorCell[,] maze)
     {
         for (int x = 0; x < maze.GetLength(0); x++)
@@ -196,7 +176,7 @@ public class MazeGenerator
             }
         }
     }
-
+    //"вырубает" путь от выхода до первой свободной клетки
     private void RemoveWallsBeforeExit(MazeGeneratorCell[,] maze)
     {
         MazeGeneratorCell current = maze[maze.GetLength(0) - 1, maze.GetLength(1) - 1];
