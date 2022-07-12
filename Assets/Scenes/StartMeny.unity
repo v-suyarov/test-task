@@ -130,6 +130,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2450668617294156307, guid: 42ff37bf5e5fa53479b539d4e04e712a, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: dc4731b2a7f24ac4ab50cc78c9bb40ef, type: 3}
     - target: {fileID: 2450668618346987445, guid: 42ff37bf5e5fa53479b539d4e04e712a, type: 3}
       propertyPath: m_Name
       value: Exit
@@ -332,15 +336,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2450668619060163517, guid: 42ff37bf5e5fa53479b539d4e04e712a, type: 3}
       propertyPath: m_Color.b
-      value: 0
+      value: 0.54427737
       objectReference: {fileID: 0}
     - target: {fileID: 2450668619060163517, guid: 42ff37bf5e5fa53479b539d4e04e712a, type: 3}
       propertyPath: m_Color.g
-      value: 0
+      value: 0.73156583
       objectReference: {fileID: 0}
     - target: {fileID: 2450668619060163517, guid: 42ff37bf5e5fa53479b539d4e04e712a, type: 3}
       propertyPath: m_Color.r
-      value: 0
+      value: 0.764151
       objectReference: {fileID: 0}
     - target: {fileID: 2450668619149621574, guid: 42ff37bf5e5fa53479b539d4e04e712a, type: 3}
       propertyPath: m_Text
@@ -572,7 +576,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.87058824}
+  m_Color: {r: 0.7647059, g: 0.73333335, b: 0.54509807, a: 0.87058824}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

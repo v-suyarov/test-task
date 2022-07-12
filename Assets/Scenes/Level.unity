@@ -133,7 +133,6 @@ GameObject:
   m_Component:
   - component: {fileID: 636105627}
   - component: {fileID: 636105626}
-  - component: {fileID: 636105628}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -155,11 +154,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerPrefab: {fileID: 5933311228812564268, guid: 431b2c4e38ee01b4bb9ac9272fcdae03, type: 3}
   EnemyPrefab: {fileID: 8093064617432656845, guid: 968d5efc8af8b144cb709bb8e450bbf7, type: 3}
-  mazeSpawner: {fileID: 636105628}
-  prevPlayerPos: {x: 0, y: 0}
-  currentPlayerPos: {x: 0, y: 0}
+  cellPrefab: {fileID: 7421452918171269484, guid: f815611588eb87245a763f4f72b0be9d, type: 3}
   NoiseText: {fileID: 959833074}
-  enemyStartedFollowing: 0
 --- !u!4 &636105627
 Transform:
   m_ObjectHideFlags: 0
@@ -174,21 +170,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &636105628
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 636105625}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4949dad05efbfd34e8ecc444543e595f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CellPrefab: {fileID: 7421452918171269484, guid: f815611588eb87245a763f4f72b0be9d, type: 3}
-  Width: 10
-  Height: 10
 --- !u!1 &836170521
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,9 +302,9 @@ RectTransform:
   m_Father: {fileID: 836170525}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -149.9}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 190, y: -180}
   m_SizeDelta: {x: 654.66, y: 260.9}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &959833074
@@ -339,7 +320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.017065406, g: 1, b: 0, a: 0.6392157}
+  m_Color: {r: 0.4528302, g: 0.36952654, b: 0.39211735, a: 0.9137255}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -445,7 +426,6 @@ GameObject:
   - component: {fileID: 1858786804}
   - component: {fileID: 1858786803}
   - component: {fileID: 1858786802}
-  - component: {fileID: 1858786805}
   - component: {fileID: 1858786806}
   m_Layer: 0
   m_Name: Main Camera
@@ -519,18 +499,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1858786805
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1858786801}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85c119ee1572b4542b79088b6c7b86b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!82 &1858786806
 AudioSource:
   m_ObjectHideFlags: 0

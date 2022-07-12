@@ -108,7 +108,7 @@ public class EnemyBehaviour : MonoBehaviour
     }
     public void EnableFollowingMod()
     {
-      spriteRenderer.color = new Color(1, 1, 0, 0.8f);     
+      spriteRenderer.color = new Color(1, 0, 0, 0.8f);     
       is_patrul = false;
       is_following = true;
     }

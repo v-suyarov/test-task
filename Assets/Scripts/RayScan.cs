@@ -30,7 +30,7 @@ public class RayScan : MonoBehaviour
 			if (hit.collider != null)
 			{
 				//если луч попадет в игрока, то включаем режим преследования
-				if (hit.collider.CompareTag("Player"))
+				if (hit.collider.CompareTag(targetTag))
 				{
 					GameManager.Instance.GetEnemy(0).GetComponent<EnemyBehaviour>().EnableFollowingMod();
 					GameManager.Instance.GetEnemy(1).GetComponent<EnemyBehaviour>().EnableFollowingMod();
